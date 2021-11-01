@@ -4,9 +4,9 @@ import transformers
 from torch.utils.data import Dataset, DataLoader
 from transformers import DistilBertModel, DistilBertTokenizer
 
-from DistillBERTClass import DistillBERTClass
+from DistillBERTClass import *
 from variables import *
-from MyDataset import MyDataset
+from MyDataset import *
 
 tokenizer = DistilBertTokenizer.from_pretrained('distilbert-base-uncased')
 
