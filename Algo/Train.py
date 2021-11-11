@@ -8,20 +8,15 @@ from DistillBERTClass import *
 from variables import *
 from MyDataset import *
 
-tokenizer = DistilBertTokenizer.from_pretrained('distilbert-base-uncased')
+from torch import cuda
 
 
 # Setting up the device for GPU usage
-
-from torch import cuda
-
 device = 'cuda' if cuda.is_available() else 'cpu'
 
 tokenizer = DistilBertTokenizer.from_pretrained('distilbert-base-uncased')
 
-
 # Creating the dataset and dataloader for the neural network
-
 train_size = 0.8
 train_dataset=df.sample(frac=train_size,random_state=200)
 test_dataset=df.drop(train_dataset.index).reset_index(drop=True)
@@ -54,9 +49,6 @@ model = DistillBERTClass()
 model.to(device)
 
 
-# Creating the loss function and optimizer
-loss_function = torch.nn.CrossEntropyLoss()
-optimizer = torch.optim.Adam(params =  model.parameters(), lr=LEARNING_RATE)
 
 # Function to calcuate the accuracy of the model
 def calcuate_accu(big_idx, targets):
@@ -185,33 +177,31 @@ def valid(model, testing_loader):
     
     return epoch_accu,f1, pre, recall
 
-#EPOCHS = 1
-score_df  = pd.DataFrame()
-for epoch in range(EPOCHS):
-    train(epoch)
-    PATH = '/content/drive/MyDrive/NLP/temp_model/Refined1_bert_with9k_e' + str(epoch)+'.pt'
-    torch.save(model.state_dict(), PATH)
-    print('Now we test')
-    acc,f1, pre, recall = valid(model, testing_loader)
-    score_df = score_df.append({'epoch':epoch,'acc':acc,'f1':f1,'pre':pre,'recall':recall},ignore_index=True)
-    PATH1 = '/content/drive/MyDrive/NLP/temp_model/Refined1_bert_with9k_score.csv'
-    score_df.to_csv(PATH1)
-    print('score_saved')
-    print("Accuracy on test data = %0.2f%%" % acc)
-
-
-# Saving the files for re-use
-
-PATH = '/content/drive/MyDrive/NLP/torch_reBERT1/Refined_bert_0.pt'
-torch.save(model.state_dict(), PATH)
-tokenizer.save_vocabulary('/content/drive/MyDrive/NLP/torch_reBERT1')
-
-
-
-
-
 def main():
-    pass
+    # Creating the loss function and optimizer
+    loss_function = torch.nn.CrossEntropyLoss()
+    optimizer = torch.optim.Adam(params =  model.parameters(), lr=LEARNING_RATE)
+
+    #EPOCHS = 1
+    score_df  = pd.DataFrame()
+    for epoch in range(EPOCHS):
+        train(epoch)
+        PATH = '/content/drive/MyDrive/NLP/temp_model/Refined1_bert_with9k_e' + str(epoch)+'.pt'
+        torch.save(model.state_dict(), PATH)
+        print('Now we test')
+        acc,f1, pre, recall = valid(model, testing_loader)
+        score_df = score_df.append({'epoch':epoch,'acc':acc,'f1':f1,'pre':pre,'recall':recall},ignore_index=True)
+        PATH1 = '/content/drive/MyDrive/NLP/temp_model/Refined1_bert_with9k_score.csv'
+        score_df.to_csv(PATH1)
+        print('score_saved')
+        print("Accuracy on test data = %0.2f%%" % acc)
+
+
+    # Saving the files for re-use
+    PATH = '/content/drive/MyDrive/NLP/torch_reBERT1/Refined_bert_0.pt'
+    torch.save(model.state_dict(), PATH)
+    tokenizer.save_vocabulary('/content/drive/MyDrive/NLP/torch_reBERT1')
+
 
 if __init__ == "main":
     main()
