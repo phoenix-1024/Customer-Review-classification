@@ -44,11 +44,13 @@ test_params = {'batch_size': VALID_BATCH_SIZE,
 training_loader = DataLoader(training_set, **train_params)
 testing_loader = DataLoader(testing_set, **test_params)
 
-
-
 model = DistillBERTClass()
 model.to(device)
 
+
+# Creating the loss function and optimizer
+loss_function = torch.nn.CrossEntropyLoss()
+optimizer = torch.optim.Adam(params =  model.parameters(), lr=LEARNING_RATE)
 
 
 # Function to calcuate the accuracy of the model
@@ -179,9 +181,6 @@ def valid(model, testing_loader):
     return epoch_accu,f1, pre, recall
 
 def main():
-    # Creating the loss function and optimizer
-    loss_function = torch.nn.CrossEntropyLoss()
-    optimizer = torch.optim.Adam(params =  model.parameters(), lr=LEARNING_RATE)
     print("started")
     #EPOCHS = 1
     score_df  = pd.DataFrame()

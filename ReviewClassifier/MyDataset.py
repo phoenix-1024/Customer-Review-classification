@@ -14,7 +14,6 @@ class MyDataset(Dataset):
     def __getitem__(self, index):
         text = str(self.data.sw_Text[index])
         text = " ".join(text.split())
-        print(self.data.Emotions[index])
         target = torch.tensor(self.data.Emotions[index].astype(int))
         return {'text' : text, 'target' : target}
 

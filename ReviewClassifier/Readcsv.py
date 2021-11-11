@@ -30,20 +30,16 @@ def Readcsv(path):
 
 
     df = df.sample(frac=1).reset_index(drop=True)
-    print(df.Emotions.value_counts())
+    #print(df.Emotions.value_counts())
 
     df.Emotions = df.Emotions.apply(make_label)
     
     df.sw_Text = df.sw_Text.apply(str)
     df.Emotions = df.Emotions.apply(int)
-
-    
+   
     truncate_long_sent(df.sw_Text)
 
     df = df[['sw_Text','Emotions']].reset_index(drop=True)
-
-
-    df.Emotions = df.Emotions.apply(make_label)
 
     return df
 
